@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"math/big"
 	"net/http"
+
+	"github.com/erodrigufer/foodTinder/internal/data"
 )
 
 // charsetSession, valid character-set for generating random session IDs.
@@ -47,12 +49,32 @@ func newRandomSession(length int, charset string) (string, error) {
 }
 
 // createNewSession, create a new unique session upon request. Store the new
-// session persistently in a database and
-func createNewSession(w http.ResponseWriter, r *http.Request) {
+// session persistently in a database, send session back to client.
+func (app *Application) createNewSession(w http.ResponseWriter, r *http.Request) {
 	sessionID, err := newRandomSession(64, charsetSession)
 	if err != nil {
-		fmt.Fprintf(w, "An error happened: %v\n", err)
+		// Create fail response.
+		resp := data.SessionResponse{
+			APIVersion: "1.0",
+			Status:     "fail",
+		}
+		app.ErrorLog.Printf("error creating new session: %v", err)
+		err = writeJSON(w, http.StatusInternalServerError, resp)
+		return
 	}
-	fmt.Fprintf(w, "Session ID: %s\n", sessionID)
+	// Create successful response.
+	resp := data.SessionResponse{
+		APIVersion: "1.0",
+		Status:     "success",
+		Data: data.SessionResponseData{
+			SessionID: sessionID,
+		},
+	}
+
+	err = writeJSON(w, http.StatusOK, resp)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
 
 }

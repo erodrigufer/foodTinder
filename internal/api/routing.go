@@ -7,11 +7,11 @@ import (
 )
 
 // routes, define the routing of the server.
-func routes() *httprouter.Router {
+func (app *Application) routes() *httprouter.Router {
 
 	router := httprouter.New()
 
-	router.HandlerFunc(http.MethodGet, "/v1/session", createNewSession)
+	router.HandlerFunc(http.MethodGet, "/v1/session", app.createNewSession)
 
 	return router
 }

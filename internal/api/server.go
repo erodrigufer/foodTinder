@@ -10,11 +10,11 @@ import (
 
 // newServer, return a new instance of the server.
 // port, defines the port at which the server will listen.
-func newServer(port int, errLog *log.Logger) *http.Server {
+func (app *Application) newServer(port int, errLog *log.Logger) *http.Server {
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", port),
 		ErrorLog:     errLog,
-		Handler:      routes(),
+		Handler:      app.routes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
