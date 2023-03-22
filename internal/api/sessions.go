@@ -63,6 +63,17 @@ func (app *Application) createNewSession(w http.ResponseWriter, r *http.Request)
 		err = writeJSON(w, http.StatusInternalServerError, resp)
 		return
 	}
+
+	session := &data.Session{
+		ID: sessionID,
+	}
+
+	err = app.models.Sessions.Insert(session)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
 	// Create successful response.
 	resp := data.SessionResponse{
 		APIVersion: API_VERSION,

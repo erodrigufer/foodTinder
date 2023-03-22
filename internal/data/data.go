@@ -11,6 +11,10 @@ type SessionResponse struct {
 }
 
 type Product struct {
-	ID   string `json:"id"`
+	ID   string `json:"product_id"`
 	Name string `json:"name"`
+}
+
+type Session struct {
+	ID string `json:"session_id"`
 }

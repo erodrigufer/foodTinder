@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/erodrigufer/foodTinder/internal/data"
 	"github.com/erodrigufer/foodTinder/internal/db"
 	_ "github.com/lib/pq"
 )
@@ -22,6 +23,8 @@ type Application struct {
 	InfoLog *log.Logger
 	// DB, DB connection pool.
 	DB *sql.DB
+
+	models data.Models
 }
 
 // NewApplication, create a new Application struct that hosts the loggers and
@@ -41,11 +44,13 @@ func NewApplication(port int, dsn string) *Application {
 
 	db_conn, err := db.OpenDB(dsn)
 	if err != nil {
-		app.ErrorLog.Fatal("unable to establish db connection: %v", err)
+		app.ErrorLog.Fatalf("unable to establish db connection: %v", err)
 	}
 	app.DB = db_conn
 
 	app.InfoLog.Printf("Database connection pool successfully established.")
+
+	app.models = data.NewModels(app.DB)
 
 	return app
 }
