@@ -9,3 +9,8 @@ type SessionResponse struct {
 	Status     string              `json:"status"`
 	Data       SessionResponseData `json:"data,omitempty"`
 }
+
+type Product struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}

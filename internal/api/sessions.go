@@ -55,7 +55,7 @@ func (app *Application) createNewSession(w http.ResponseWriter, r *http.Request)
 	if err != nil {
 		// Create fail response.
 		resp := data.SessionResponse{
-			APIVersion: "1.0",
+			APIVersion: API_VERSION,
 			Status:     "fail",
 		}
 		app.ErrorLog.Printf("error creating new session: %v", err)
@@ -65,7 +65,7 @@ func (app *Application) createNewSession(w http.ResponseWriter, r *http.Request)
 	}
 	// Create successful response.
 	resp := data.SessionResponse{
-		APIVersion: "1.0",
+		APIVersion: API_VERSION,
 		Status:     "success",
 		Data: data.SessionResponseData{
 			SessionID: sessionID,

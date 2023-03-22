@@ -1,10 +1,16 @@
 package api
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/erodrigufer/foodTinder/internal/db"
+	_ "github.com/lib/pq"
 )
+
+const API_VERSION = "1.0"
 
 // Application, object to interact with API from within main cmd file.
 type Application struct {
@@ -14,11 +20,13 @@ type Application struct {
 	ErrorLog *log.Logger
 	// InfoLog, informative server logger.
 	InfoLog *log.Logger
+	// DB, DB connection pool.
+	DB *sql.DB
 }
 
 // NewApplication, create a new Application struct that hosts the loggers and
 // http.Server
-func NewApplication(port int) *Application {
+func NewApplication(port int, dsn string) *Application {
 	app := new(Application)
 	// Create a logger for INFO messages, the prefix "INFO" and a tab will be
 	// displayed before each log message. The flags Ldate and Ltime provide the
@@ -30,6 +38,14 @@ func NewApplication(port int) *Application {
 	app.ErrorLog = log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	app.Srv = app.newServer(port)
+
+	db_conn, err := db.OpenDB(dsn)
+	if err != nil {
+		app.ErrorLog.Fatal("unable to establish db connection: %v", err)
+	}
+	app.DB = db_conn
+
+	app.InfoLog.Printf("Database connection pool successfully established.")
 
 	return app
 }
