@@ -18,3 +18,9 @@ type Product struct {
 type Session struct {
 	ID string `json:"session_id"`
 }
+
+type Vote struct {
+	SessionID string `json:"session_id"`
+	ProductID string `json:"product_id"`
+	Vote      bool   `json:"vote"`
+}

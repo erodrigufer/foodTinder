@@ -3,7 +3,6 @@ package data
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 )
 
 var (
@@ -14,6 +13,9 @@ type Models struct {
 	Sessions interface {
 		Insert(session *Session) error
 	}
+	Votes interface {
+		Insert(vote *Vote) error
+	}
 }
 
 func NewModels(db *sql.DB) Models {
@@ -21,27 +23,8 @@ func NewModels(db *sql.DB) Models {
 		Sessions: SessionModel{
 			DB: db,
 		},
+		Votes: VotesModel{
+			DB: db,
+		},
 	}
-}
-
-type SessionModel struct {
-	DB *sql.DB
-}
-
-func (s SessionModel) Insert(session *Session) error {
-	query := `
-	INSERT INTO sessions (session_id) 
-	VALUES ($1)`
-
-	args := []interface{}{session.ID}
-
-	_, err := s.DB.Exec(query, args...)
-	if err != nil {
-		err = fmt.Errorf("error inserting session in db: %w", err)
-	}
-	return err
-}
-func (s SessionModel) Get(id int64) (*Session, error) {
-
-	return nil, nil
 }

@@ -12,6 +12,7 @@ func (app *Application) routes() *httprouter.Router {
 	router := httprouter.New()
 
 	router.HandlerFunc(http.MethodGet, "/v1/session", app.createNewSession)
+	router.HandlerFunc(http.MethodPost, "/v1/product/:id", app.createNewVote)
 
 	return router
 }
