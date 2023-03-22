@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"runtime/debug"
 	"time"
@@ -10,10 +9,10 @@ import (
 
 // newServer, return a new instance of the server.
 // port, defines the port at which the server will listen.
-func (app *Application) newServer(port int, errLog *log.Logger) *http.Server {
+func (app *Application) newServer(port int) *http.Server {
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", port),
-		ErrorLog:     errLog,
+		ErrorLog:     app.ErrorLog,
 		Handler:      app.routes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,

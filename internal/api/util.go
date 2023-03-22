@@ -16,6 +16,7 @@ func writeJSON(w http.ResponseWriter, status int, data interface{}) error {
 	}
 	// JSON-specific HTTP header.
 	w.Header().Set("Content-Type", "application/json")
+	// HTTP status code.
 	w.WriteHeader(status)
 	w.Write(js)
 

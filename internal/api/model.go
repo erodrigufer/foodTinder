@@ -29,7 +29,7 @@ func NewApplication(port int) *Application {
 	// display the file's name and line number for the error.
 	app.ErrorLog = log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	app.Srv = app.newServer(port, app.ErrorLog)
+	app.Srv = app.newServer(port)
 
 	return app
 }

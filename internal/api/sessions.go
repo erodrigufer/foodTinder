@@ -59,6 +59,7 @@ func (app *Application) createNewSession(w http.ResponseWriter, r *http.Request)
 			Status:     "fail",
 		}
 		app.ErrorLog.Printf("error creating new session: %v", err)
+		// Respond with Internal Server Error status code.
 		err = writeJSON(w, http.StatusInternalServerError, resp)
 		return
 	}
