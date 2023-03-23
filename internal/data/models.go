@@ -21,6 +21,7 @@ type Models struct {
 	Products interface {
 		Insert(product *Product) error
 		Exists(productID string) (bool, error)
+		Products() ([]Product, error)
 	}
 }
 

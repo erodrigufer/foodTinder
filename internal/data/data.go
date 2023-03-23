@@ -48,3 +48,13 @@ type MachineProduct struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
+
+type AllProductsResponse struct {
+	APIVersion string       `json:"api_version"`
+	Status     string       `json:"status"`
+	Data       ProductsData `json:"data,omitempty"`
+}
+
+type ProductsData struct {
+	Products []Product `json:"products"`
+}

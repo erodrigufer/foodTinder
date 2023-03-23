@@ -44,3 +44,31 @@ func (p ProductsModel) Exists(productID string) (bool, error) {
 
 	return true, nil
 }
+
+func (p ProductsModel) Products() ([]Product, error) {
+	query := `
+	SELECT product_id, product_name
+	FROM products`
+
+	var product Product
+	products := make([]Product, 0, 25)
+	rows, err := p.DB.Query(query)
+	if err != nil {
+		return products, fmt.Errorf("error performing db query: %w", err)
+	}
+
+	for rows.Next() {
+		err := rows.Scan(&product.ID, &product.Name)
+		if err != nil {
+			switch {
+			case errors.Is(err, sql.ErrNoRows):
+				return products, nil
+			default:
+				return products, fmt.Errorf("error performing scan of rows: %w", err)
+			}
+		}
+		products = append(products, product)
+	}
+
+	return products, nil
+}
