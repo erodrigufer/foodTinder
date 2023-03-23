@@ -2,11 +2,13 @@ package api
 
 import (
 	"crypto/rand"
+	"errors"
 	"fmt"
 	"math/big"
 	"net/http"
 
 	"github.com/erodrigufer/foodTinder/internal/data"
+	"github.com/julienschmidt/httprouter"
 )
 
 // charsetSession, valid character-set for generating random session IDs.
@@ -87,6 +89,46 @@ func (app *Application) createNewSession(w http.ResponseWriter, r *http.Request)
 	if err != nil {
 		app.serverError(w, err)
 		return
+	}
+
+}
+
+func (app *Application) getVotesSession(w http.ResponseWriter, r *http.Request) {
+	// Get session ID from URL.
+	idParam := httprouter.ParamsFromContext(r.Context())
+	sessionID := idParam.ByName("id")
+
+	// Check if session ID already exists in the db.
+	// TODO: this should actually be done as a transaction for
+	// concurrency safety.
+	exists, err := app.models.Sessions.Exists(sessionID)
+	if !exists {
+		if errors.Is(err, data.ErrRecordNotFound) {
+			errorDisplayClient := fmt.Sprintf("%s\nError: Session ID is not valid\n", http.StatusText(http.StatusBadRequest))
+			http.Error(w, errorDisplayClient, http.StatusBadRequest)
+		} else {
+			errorDisplayClient := fmt.Sprintf("%s\nError: %s\n", http.StatusText(http.StatusBadRequest), err)
+			http.Error(w, errorDisplayClient, http.StatusBadRequest)
+
+		}
+		return
+	}
+
+	votes, err := app.models.Votes.Votes(sessionID)
+	if err != nil {
+		// Internal Server Error.
+		err = fmt.Errorf("error while retrieving votes of a session: %w", err)
+		app.serverError(w, err)
+		return
+	}
+
+	err = writeJSON(w, http.StatusOK, votes)
+	if err != nil {
+		// Internal Server Error.
+		err = fmt.Errorf("error while writing JSON response: %w", err)
+		app.serverError(w, err)
+		return
+
 	}
 
 }

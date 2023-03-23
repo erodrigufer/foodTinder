@@ -16,6 +16,7 @@ type Models struct {
 	}
 	Votes interface {
 		Insert(vote *Vote) error
+		Votes(sessionID string) ([]Vote, error)
 	}
 }
 
