@@ -122,7 +122,15 @@ func (app *Application) getVotesSession(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	err = writeJSON(w, http.StatusOK, votes)
+	resp := data.SessionVotesResponse{
+		APIVersion: API_VERSION,
+		Status:     "success",
+		Data: data.SessionVotesData{
+			Votes: votes,
+		},
+	}
+
+	err = writeJSON(w, http.StatusOK, resp)
 	if err != nil {
 		// Internal Server Error.
 		err = fmt.Errorf("error while writing JSON response: %w", err)

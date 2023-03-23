@@ -24,3 +24,13 @@ type Vote struct {
 	ProductID string `json:"product_id"`
 	Vote      bool   `json:"vote"`
 }
+
+type SessionVotesResponse struct {
+	APIVersion string           `json:"api_version"`
+	Status     string           `json:"status"`
+	Data       SessionVotesData `json:"data,omitempty"`
+}
+
+type SessionVotesData struct {
+	Votes []Vote `json:"votes"`
+}
