@@ -52,5 +52,10 @@ func NewApplication(port int, dsn string) *Application {
 
 	app.models = data.NewModels(app.DB)
 
+	err = app.fetchProducts()
+	if err != nil {
+		app.ErrorLog.Print(err)
+	}
+
 	return app
 }

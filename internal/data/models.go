@@ -18,6 +18,9 @@ type Models struct {
 		Insert(vote *Vote) error
 		Votes(sessionID string) ([]Vote, error)
 	}
+	Products interface {
+		Insert(product *Product) error
+	}
 }
 
 func NewModels(db *sql.DB) Models {
@@ -26,6 +29,9 @@ func NewModels(db *sql.DB) Models {
 			DB: db,
 		},
 		Votes: VotesModel{
+			DB: db,
+		},
+		Products: ProductsModel{
 			DB: db,
 		},
 	}
