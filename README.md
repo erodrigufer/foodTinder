@@ -12,6 +12,14 @@ Create a session and start rating our products!
 
 ## curl commands
 
+### Request a new unique session
+
+```
+curl --header "Content-Type: application/json" \
+  --request GET \
+  http://5.75.165.31:8000/v1/session
+```
+
 ### Vote for or against a given product
 * The path after product in the URL must be the `product_id` for which a vote will be cast.
 
@@ -22,7 +30,7 @@ The same goes to the `product_id` in the URL.
 
 ```
 curl --header "Content-Type: application/json" \
-  --request GET \
+  --request POST \
   --data '{"vote":true,"session_id":"y7anpvouHGf84UNlAUt5bqHatjB2cZpKe9LrMQ2BR39S0uztJ22Ii7n2ihAtSGra"}' \
   http://5.75.165.31:8000/v1/product/3aba3a59-fd44-45e8-80db-7d4771b8f822
 ```
@@ -35,6 +43,14 @@ curl --header "Content-Type: application/json" \
   http://5.75.165.31:8000/v1/product
 ```
 
+### Get all the votes from a given session
+* Replace `<:id>` in the code snippet below for the session ID of the session, for which you want to see all its voting history.
+
+```
+curl --header "Content-Type: application/json" \
+  --request GET \
+  http://5.75.165.31:8000/v1/session/<:id>
+```
 
 ## Limitations
 * The system retrieves all the products available at an endpoint only once after it boots.
@@ -42,5 +58,8 @@ Afterwards, the system does not communicate further with the endpoint that provi
 To see all the available products, send a `GET` request to `/v1/product`
 
 * The functionality to retrieve the aggregated score of a product accross all sessions was not implemented due to a time constraint.
+
+* Also, due to a time constraint, when casting a vote for a product, the system does not update any previous votes of a session for a given product.
+It just stores the new vote in a new row of the `votes` table.
 
 All rights reserved. Eduardo Rodriguez (c) 2023 
