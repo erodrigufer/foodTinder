@@ -44,7 +44,7 @@ curl --header "Content-Type: application/json" \
 ```
 
 ### Get all the votes from a given session
-* Replace `<:id>` in the code snippet below for the session ID of the session, for which you want to see all its voting history.
+* Replace `<:id>` in the code snippet below with the session ID of the session, for which you want to see all its voting history.
 
 ```
 curl --header "Content-Type: application/json" \
