@@ -2,6 +2,7 @@ package data
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 )
 
@@ -21,4 +22,25 @@ func (p ProductsModel) Insert(product *Product) error {
 		err = fmt.Errorf("error inserting product in db: %w", err)
 	}
 	return err
+}
+
+func (p ProductsModel) Exists(productID string) (bool, error) {
+	query := `
+	SELECT product_name 
+	FROM products
+	WHERE product_id = $1`
+
+	var name string
+	err := p.DB.QueryRow(query, productID).Scan(&name)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return false, ErrRecordNotFound
+		default:
+			return false, err
+		}
+	}
+
+	return true, nil
 }

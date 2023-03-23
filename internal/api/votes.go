@@ -28,10 +28,26 @@ func (app *Application) createNewVote(w http.ResponseWriter, r *http.Request) {
 	idParam := httprouter.ParamsFromContext(r.Context())
 	productID := idParam.ByName("id")
 
+	// Check if product ID is valid (if product exists).
+	// TODO: this should actually be done as a transaction for
+	// concurrency safety.
+	exists, err := app.models.Products.Exists(productID)
+	if !exists {
+		if errors.Is(err, data.ErrRecordNotFound) {
+			errorDisplayClient := fmt.Sprintf("%s\nError: Product ID is not valid\n", http.StatusText(http.StatusBadRequest))
+			http.Error(w, errorDisplayClient, http.StatusBadRequest)
+		} else {
+			errorDisplayClient := fmt.Sprintf("%s\nError: %s\n", http.StatusText(http.StatusBadRequest), err)
+			http.Error(w, errorDisplayClient, http.StatusBadRequest)
+
+		}
+		return
+	}
+
 	// Check if session ID already exists in the db.
 	// TODO: this should actually be done as a transaction for
 	// concurrency safety.
-	exists, err := app.models.Sessions.Exists(input.Session_ID)
+	exists, err = app.models.Sessions.Exists(input.Session_ID)
 	if !exists {
 		if errors.Is(err, data.ErrRecordNotFound) {
 			errorDisplayClient := fmt.Sprintf("%s\nError: Session ID is not valid\n", http.StatusText(http.StatusBadRequest))

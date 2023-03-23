@@ -23,6 +23,7 @@ func (s SessionModel) Insert(session *Session) error {
 	}
 	return err
 }
+
 func (s SessionModel) Exists(sessionID string) (bool, error) {
 	query := `
 	SELECT * 
