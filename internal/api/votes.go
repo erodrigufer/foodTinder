@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -23,8 +24,25 @@ func (app *Application) createNewVote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get product ID from URL.
 	idParam := httprouter.ParamsFromContext(r.Context())
 	productID := idParam.ByName("id")
+
+	// Check if session ID already exists in the db.
+	// TODO: this should actually be done as a transaction for
+	// concurrency safety.
+	exists, err := app.models.Sessions.Exists(input.Session_ID)
+	if !exists {
+		if errors.Is(err, data.ErrRecordNotFound) {
+			errorDisplayClient := fmt.Sprintf("%s\nError: Session ID is not valid\n", http.StatusText(http.StatusBadRequest))
+			http.Error(w, errorDisplayClient, http.StatusBadRequest)
+		} else {
+			errorDisplayClient := fmt.Sprintf("%s\nError: %s\n", http.StatusText(http.StatusBadRequest), err)
+			http.Error(w, errorDisplayClient, http.StatusBadRequest)
+
+		}
+		return
+	}
 
 	vote := &data.Vote{
 		SessionID: input.Session_ID,

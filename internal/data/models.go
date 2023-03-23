@@ -12,6 +12,7 @@ var (
 type Models struct {
 	Sessions interface {
 		Insert(session *Session) error
+		Exists(sessionID string) (bool, error)
 	}
 	Votes interface {
 		Insert(vote *Vote) error

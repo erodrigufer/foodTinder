@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS products (
 
 CREATE TABLE IF NOT EXISTS votes (
 	id bigserial PRIMARY KEY,
-   	session_id text NOT NULL
+   	session_id text NOT NULL,
 	product_id text NOT NULL,
-	vote integer NOT NULL
+	vote boolean
 	);

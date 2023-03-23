@@ -2,6 +2,7 @@ package data
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 )
 
@@ -22,7 +23,25 @@ func (s SessionModel) Insert(session *Session) error {
 	}
 	return err
 }
-func (s SessionModel) Get(id int64) (*Session, error) {
+func (s SessionModel) Exists(sessionID string) (bool, error) {
+	query := `
+	SELECT * 
+	FROM sessions
+	WHERE session_id = $1`
 
-	return nil, nil
+	// These two variables are only required to properly run the Scan method.
+	var id int64
+	var sid string
+	err := s.DB.QueryRow(query, sessionID).Scan(&id, &sid)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return false, ErrRecordNotFound
+		default:
+			return false, err
+		}
+	}
+
+	return true, nil
 }
